@@ -1,5 +1,5 @@
 import unittest
-from src.epubcfi.parser import _capture_cfi
+from src.epubcfi.cfi import _capture_cfi
 
 class TestChunk(unittest.TestCase):
 
