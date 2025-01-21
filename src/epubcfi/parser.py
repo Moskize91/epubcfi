@@ -33,6 +33,9 @@ class Path:
     if self.offset is not None:
       buffer.write(str(self.offset))
     return buffer.getvalue()
+  
+PathTuple = tuple[Path, Path, Path]
+ParsedPath = Path | PathTuple
 
 @dataclass
 class Redirect:
@@ -44,7 +47,7 @@ class _Parser:
     self._cache_token: Token | None = None
     self._tokenizer: Tokenizer = Tokenizer(content)
 
-  def parse(self) -> Path | tuple[Path, Path, Path]:
+  def parse(self) -> ParsedPath:
     paths = list(self._search_path())
     if len(paths) == 1:
       return paths[0]
@@ -89,12 +92,12 @@ class _Parser:
         break
       self._forward()
     
-    if len(steps) == 0:
-      return None
-
     if isinstance(self._token, TokenOffset):
       offset = self._token
       self._forward()
+
+    if len(steps) == 0 and offset is None:
+      return None
 
     if offset is None and isinstance(self._token, Symbol) and self._token.text == "!":
       # 参考 https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-epubcfi-syntax
@@ -124,5 +127,5 @@ class _Parser:
       if self._cache_token is not None:
         break
 
-def parse(content: str) -> Path | tuple[Path, Path, Path]:
+def parse(content: str) -> ParsedPath:
   return _Parser(content).parse()

@@ -1,7 +1,7 @@
 import re
-from .parser import parse, Path
+from .parser import parse, Path, PathTuple, ParsedPath
 
-def split(path: str) -> tuple[str, None | Path | tuple[Path, Path, Path]]:
+def split(path: str) -> tuple[str, ParsedPath | None]:
   tail, cfi = _capture_cfi(path)
   if cfi is None:
     return path, None
@@ -9,14 +9,14 @@ def split(path: str) -> tuple[str, None | Path | tuple[Path, Path, Path]]:
   prefix = path[:len(path) - len(tail)]
   return prefix, result
 
-def format(path: Path | tuple[Path, Path, Path]) -> str:
+def format(path: ParsedPath) -> str:
   if isinstance(path, Path):
     return str(path)
   else:
     parent, start, end = path
     return f"{parent},{start},{end}"
 
-def to_absolute(paths: tuple[Path, Path, Path]) -> tuple[Path, Path]:
+def to_absolute(paths: PathTuple) -> tuple[Path, Path]:
   parent, start0, end0 = paths
   start = Path(
     steps=parent.steps + start0.steps,

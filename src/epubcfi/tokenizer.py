@@ -129,7 +129,7 @@ class Tokenizer:
       return None, True
     else:
       text: str = self._buffer.getvalue()
-      if len(text) > 0 and text.startswith("0"):
+      if len(text) > 1 and text.startswith("0"):
         raise TokenizerException(f"{text} leading zero is not allowed")
       integer = int(text)
       self._buffer = StringIO()
