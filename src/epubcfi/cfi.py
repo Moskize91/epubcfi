@@ -9,6 +9,13 @@ def split(path: str) -> tuple[str, None | Path | tuple[Path, Path, Path]]:
   prefix = path[:len(path) - len(tail)]
   return prefix, result
 
+def format(path: Path | tuple[Path, Path, Path]) -> str:
+  if isinstance(path, Path):
+    return str(path)
+  else:
+    parent, start, end = path
+    return f"{parent},{start},{end}"
+
 def to_absolute(paths: tuple[Path, Path, Path]) -> tuple[Path, Path]:
   parent, start0, end0 = paths
   start = Path(
