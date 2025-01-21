@@ -89,12 +89,12 @@ class _Parser:
         break
       self._forward()
     
-    if len(steps) == 0:
-      return None
-
     if isinstance(self._token, TokenOffset):
       offset = self._token
       self._forward()
+
+    if len(steps) == 0 and offset is None:
+      return None
 
     if offset is None and isinstance(self._token, Symbol) and self._token.text == "!":
       # 参考 https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-epubcfi-syntax
