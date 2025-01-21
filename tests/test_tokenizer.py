@@ -1,7 +1,7 @@
 import unittest
 from src.epubcfi.tokenizer import Token, EOF, Tokenizer
 
-class TestChunk(unittest.TestCase):
+class TestTokenizer(unittest.TestCase):
 
   def test_tokenizer(self):
     cfi_list = [

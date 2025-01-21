@@ -1,7 +1,7 @@
 import unittest
 from src.epubcfi.parser import parse
 
-class TestChunk(unittest.TestCase):
+class TestParser(unittest.TestCase):
 
   def test_parse_cfi(self):
     cfi_list = [

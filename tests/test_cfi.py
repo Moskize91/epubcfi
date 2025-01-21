@@ -1,7 +1,7 @@
 import unittest
 from src.epubcfi.cfi import split, to_absolute, _capture_cfi
 
-class TestChunk(unittest.TestCase):
+class TestCFI(unittest.TestCase):
 
   def test_to_absolute(self):
     prefix, results = split("book.epub#epubcfi(/6/4,!/2[foobar],/10/4[foz])")

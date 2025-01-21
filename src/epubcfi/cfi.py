@@ -1,9 +1,6 @@
 import re
 from .parser import parse, Path
 
-class EpubCFI:
-  pass
-
 def split(path: str) -> tuple[str, None | Path | tuple[Path, Path, Path]]:
   tail, cfi = _capture_cfi(path)
   if cfi is None:
