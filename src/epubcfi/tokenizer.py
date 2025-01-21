@@ -21,7 +21,7 @@ class EOF(Token):
 
 @dataclass
 class Symbol(Token):
-  text: str
+  text: Literal[",", "!"]
 
   def __str__(self) -> str:
     return self.text
