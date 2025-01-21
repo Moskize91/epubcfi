@@ -1,5 +1,5 @@
 import unittest
-from src.epubcfi.cfi import split, to_absolute, _capture_cfi
+from src.epubcfi.cfi import split, format, to_absolute, _capture_cfi
 
 class TestCFI(unittest.TestCase):
 
@@ -10,6 +10,12 @@ class TestCFI(unittest.TestCase):
     self.assertEqual(prefix, "book.epub")
     self.assertEqual(str(start), "/6/4!/2[foobar]")
     self.assertEqual(str(end), "/6/4/10/4[foz]")
+
+  def test_format(self):
+    prefix, results = split("book.epub#epubcfi(/6/4,!/2[foobar],/10/4[foz])")
+    self.assertTrue(isinstance(results, tuple))
+    self.assertEqual(prefix, "book.epub")
+    self.assertEqual(format(results), "/6/4,!/2[foobar],/10/4[foz]")
 
   def test_capture_cfi(self):
     pairs = [(
