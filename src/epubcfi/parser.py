@@ -33,6 +33,9 @@ class Path:
     if self.offset is not None:
       buffer.write(str(self.offset))
     return buffer.getvalue()
+  
+PathTuple = tuple[Path, Path, Path]
+ParsedPath = Path | PathTuple
 
 @dataclass
 class Redirect:
@@ -44,7 +47,7 @@ class _Parser:
     self._cache_token: Token | None = None
     self._tokenizer: Tokenizer = Tokenizer(content)
 
-  def parse(self) -> Path | tuple[Path, Path, Path]:
+  def parse(self) -> ParsedPath:
     paths = list(self._search_path())
     if len(paths) == 1:
       return paths[0]
@@ -124,5 +127,5 @@ class _Parser:
       if self._cache_token is not None:
         break
 
-def parse(content: str) -> Path | tuple[Path, Path, Path]:
+def parse(content: str) -> ParsedPath:
   return _Parser(content).parse()
