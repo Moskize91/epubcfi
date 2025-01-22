@@ -54,38 +54,48 @@ class Path:
     return buffer.getvalue()
   
   def __lt__(self, obj: Any) -> bool:
-    if not isinstance(obj, Path):
+    if not isinstance(obj, ParsedPath):
       return True
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 < tail2
 
   def __gt__(self, obj: Any) -> bool:
-    if not isinstance(obj, Path):
+    if not isinstance(obj, ParsedPath):
       return False
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 > tail2
 
   def __le__(self, obj: Any) -> bool:
-    if not isinstance(obj, Path):
+    if not isinstance(obj, ParsedPath):
       return True
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 <= tail2
 
   def __ge__(self, obj: Any) -> bool:
-    if not isinstance(obj, Path):
+    if not isinstance(obj, ParsedPath):
       return False
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 >= tail2
 
   def __eq__(self, obj: Any) -> bool:
-    if not isinstance(obj, Path):
+    if not isinstance(obj, ParsedPath):
       return False
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 == tail2
   
-  def _skip_common_steps_head(self, obj: Path):
-    index = 0
-    for s1, s2 in zip(self.steps, obj.steps):
+  def _skip_common_steps_head(self, obj: ParsedPath):
+    obj_steps: list[Redirect | Step]
+    obj_offset: Offset | None
+    index: int = 0
+
+    if isinstance(obj, PathRange):
+      obj_steps = obj.parent.steps + obj.start.steps
+      obj_offset = obj.start.offset
+    else:
+      obj_steps = obj.steps
+      obj_offset = obj.offset
+
+    for s1, s2 in zip(self.steps, obj_steps):
       if s1 != s2:
         break
       index += 1
@@ -97,10 +107,10 @@ class Path:
       tail1 = self.steps[index]
     else:
       tail1 = self.offset
-    if index < len(obj.steps):
-      tail2 = obj.steps[index]
+    if index < len(obj_steps):
+      tail2 = obj_steps[index]
     else:
-      tail2 = obj.offset
+      tail2 = obj_offset
 
     type1 = self._offset_type_id(tail1)
     type2 = self._offset_type_id(tail2)
@@ -111,20 +121,7 @@ class Path:
       return (1, 0)
     else:
       return (tail1, tail2)
-  
-  def _convert_tail_to_comparable_pairs(self, obj: Path):
-    offset1 = self.offset
-    offset2 = obj.offset
-    type1 = self._offset_type_id(offset1)
-    type2 = self._offset_type_id(offset2)
 
-    if type1 < type2:
-      return (0, 1)
-    elif type1 > type2:
-      return (1, 0)
-    else:
-      return (offset1, offset2)
-  
   def _offset_type_id(self, tail: Redirect | Step | Offset | None):
     # https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-sorting
     # different step types come in the following order from least important to most important: 
@@ -157,52 +154,47 @@ class PathRange:
     return f"{self.parent},{self.start},{self.end}"
   
   def __lt__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, ParsedPath):
       return True
-    if self.parent != obj.parent:
-      return self.parent < obj.parent
-    elif self.start != obj.start:
-      return self.start < obj.start
-    else:
-      return self.end < obj.end
+    if isinstance(obj, Path):
+      return obj > self
+    return self._to_tuple() < obj._to_tuple()
 
   def __gt__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, ParsedPath):
       return False
-    if self.parent != obj.parent:
-      return self.parent > obj.parent
-    elif self.start != obj.start:
-      return self.start > obj.start
-    else:
-      return self.end > obj.end
+    if isinstance(obj, Path):
+      return obj < self
+    return self._to_tuple() > obj._to_tuple()
 
   def __le__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, ParsedPath):
       return True
-    if self.parent != obj.parent:
-      return self.parent <= obj.parent
-    elif self.start != obj.start:
-      return self.start <= obj.start
-    else:
-      return self.end <= obj.end
+    if isinstance(obj, Path):
+      return obj >= self
+    return self._to_tuple() <= obj._to_tuple()
 
   def __ge__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, ParsedPath):
       return False
-    if self.parent != obj.parent:
-      return self.parent >= obj.parent
-    elif self.start != obj.start:
-      return self.start >= obj.start
-    else:
-      return self.end >= obj.end
+    if isinstance(obj, Path):
+      return obj <= self
+    return self._to_tuple() >= obj._to_tuple()
 
   def __eq__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, ParsedPath):
       return False
-    return (
-      self.parent == obj.parent and \
-      self.start == obj.start and \
-      self.end == obj.end
-    )
+    if isinstance(obj, Path):
+      return obj == self
+    return self._to_tuple() == obj._to_tuple()
+  
+  def _to_tuple(self):
+    return (self.parent, self.start, self.end)
+  
+  def _obj_to_tuple(self, obj: ParsedPath):
+    if isinstance(obj, PathRange):
+      return obj._to_tuple()
+    else:
+      return obj, obj, obj
 
 ParsedPath = Path | PathRange
