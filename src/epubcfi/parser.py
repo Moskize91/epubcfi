@@ -2,13 +2,13 @@ from __future__ import annotations
 from typing import Literal
 from .error import ParserException
 from .path import Path, PathRange, ParsedPath, Redirect, Offset
+from .token import Offset as TokenOffset
 from .tokenizer import (
   EOF,
   Step,
   Symbol,
   Token,
   Tokenizer,
-  Offset as TokenOffset,
 )
   
 class _Parser:

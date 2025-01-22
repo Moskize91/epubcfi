@@ -3,8 +3,7 @@
 from io import StringIO
 from dataclasses import dataclass
 from functools import total_ordering
-from typing import Self
-
+from typing import Any
 from .tokenizer import (
   Step, 
   CharacterOffset,
@@ -21,19 +20,19 @@ class Redirect:
   def __str__(self) -> str:
     return "!"
   
-  def __lt__(self, obj: Self) -> bool:
+  def __lt__(self, _: Any) -> bool:
     return False
 
-  def __gt__(self, obj: Self) -> bool:
+  def __gt__(self, _: Any) -> bool:
     return False
 
-  def __le__(self, obj: Self) -> bool:
+  def __le__(self, obj: Any) -> bool:
     return isinstance(obj, Redirect)
 
-  def __ge__(self, obj: Self) -> bool:
+  def __ge__(self, obj: Any) -> bool:
     return isinstance(obj, Redirect)
 
-  def __eq__(self, obj: Self) -> bool:
+  def __eq__(self, obj: Any) -> bool:
     return isinstance(obj, Redirect)
 
 @dataclass
@@ -53,7 +52,7 @@ class Path:
       buffer.write(str(self.offset))
     return buffer.getvalue()
   
-  def __lt__(self, obj: Self) -> bool:
+  def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return True
     step1, step2 = self._skip_common_steps_head(obj)
@@ -67,7 +66,7 @@ class Path:
       offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
       return offset1 < offset2
 
-  def __gt__(self, obj: Self) -> bool:
+  def __gt__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     step1, step2 = self._skip_common_steps_head(obj)
@@ -81,7 +80,7 @@ class Path:
       offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
       return offset1 > offset2
 
-  def __le__(self, obj: Self) -> bool:
+  def __le__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return True
     step1, step2 = self._skip_common_steps_head(obj)
@@ -95,7 +94,7 @@ class Path:
       offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
       return offset1 <= offset2
 
-  def __ge__(self, obj: Self) -> bool:
+  def __ge__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     step1, step2 = self._skip_common_steps_head(obj)
@@ -109,7 +108,7 @@ class Path:
       offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
       return offset1 >= offset2
 
-  def __eq__(self, obj: Self) -> bool:
+  def __eq__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     step1, step2 = self._skip_common_steps_head(obj)
@@ -118,7 +117,7 @@ class Path:
     offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
     return offset1 == offset2
   
-  def _skip_common_steps_head(self, obj: Self):
+  def _skip_common_steps_head(self, obj: Any):
     index = 0
     for s1, s2 in zip(self.steps, obj.steps):
       if s1 != s2:
@@ -132,7 +131,7 @@ class Path:
       step2 = obj.steps[index]
     return step1, step2
   
-  def _convert_offset_to_comparable_pairs(self, obj: Self):
+  def _convert_offset_to_comparable_pairs(self, obj: Any):
     offset1 = self.offset
     offset2 = obj.offset
     type1 = self._offset_type_id(offset1)
@@ -169,7 +168,7 @@ class PathRange:
   def __str__(self):
     return f"{self.parent},{self.start},{self.end}"
   
-  def __lt__(self, obj: Self) -> bool:
+  def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return True
     if self.parent != obj.parent:
@@ -179,7 +178,7 @@ class PathRange:
     else:
       return self.end < obj.end
 
-  def __gt__(self, obj: Self) -> bool:
+  def __gt__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     if self.parent != obj.parent:
@@ -189,7 +188,7 @@ class PathRange:
     else:
       return self.end > obj.end
 
-  def __le__(self, obj: Self) -> bool:
+  def __le__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return True
     if self.parent != obj.parent:
@@ -199,7 +198,7 @@ class PathRange:
     else:
       return self.end <= obj.end
 
-  def __ge__(self, obj: Self) -> bool:
+  def __ge__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     if self.parent != obj.parent:
@@ -209,7 +208,7 @@ class PathRange:
     else:
       return self.end >= obj.end
 
-  def __eq__(self, obj: Self) -> bool:
+  def __eq__(self, obj: Any) -> bool:
     if not isinstance(obj, PathRange):
       return False
     return (
