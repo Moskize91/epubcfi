@@ -1,11 +1,17 @@
 import re
-from .parser import parse, Path, PathTuple, ParsedPath
+from .parser import parse as parse_cfi, Path, PathTuple, ParsedPath
+
+def parse(path: str) -> tuple[str, ParsedPath | None]:
+  _, cfi = _capture_cfi(path)
+  if cfi is None:
+    return path, None
+  return parse_cfi(cfi)
 
 def split(path: str) -> tuple[str, ParsedPath | None]:
   tail, cfi = _capture_cfi(path)
   if cfi is None:
     return path, None
-  result = parse(cfi)
+  result = parse_cfi(cfi)
   prefix = path[:len(path) - len(tail)]
   return prefix, result
 

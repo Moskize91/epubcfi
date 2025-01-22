@@ -1,5 +1,5 @@
 import unittest
-from src.epubcfi.cfi import split, format, _capture_cfi
+from src.epubcfi.cfi import parse, format, _capture_cfi
 
 class TestHistoryBug(unittest.TestCase):
 
@@ -9,6 +9,6 @@ class TestHistoryBug(unittest.TestCase):
       "epubcfi(/6/22[id17]!/4/62/1,:0,:59)"
     ]
     for expression in history_expressions:
-      _, path = split(expression)
       _, cfi = _capture_cfi(expression)
+      path = parse(expression)
       self.assertEqual(cfi, format(path))
