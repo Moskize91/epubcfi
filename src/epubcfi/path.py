@@ -1,5 +1,6 @@
 # https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-sorting
 
+from __future__ import annotations
 from io import StringIO
 from dataclasses import dataclass
 from functools import total_ordering
@@ -53,85 +54,65 @@ class Path:
     return buffer.getvalue()
   
   def __lt__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, Path):
       return True
-    step1, step2 = self._skip_common_steps_head(obj)
-    if step1 and step2:
-      return step1 < step2
-    elif step1:
-      return True
-    elif step2:
-      return False
-    else:
-      offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
-      return offset1 < offset2
+    tail1, tail2 = self._skip_common_steps_head(obj)
+    return tail1 < tail2
 
   def __gt__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, Path):
       return False
-    step1, step2 = self._skip_common_steps_head(obj)
-    if step1 and step2:
-      return step1.index > step2.index
-    elif step1:
-      return False
-    elif step2:
-      return True
-    else:
-      offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
-      return offset1 > offset2
+    tail1, tail2 = self._skip_common_steps_head(obj)
+    return tail1 > tail2
 
   def __le__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, Path):
       return True
-    step1, step2 = self._skip_common_steps_head(obj)
-    if step1 and step2:
-      return step1.index <= step2.index
-    elif step1:
-      return True
-    elif step2:
-      return False
-    else:
-      offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
-      return offset1 <= offset2
+    tail1, tail2 = self._skip_common_steps_head(obj)
+    return tail1 <= tail2
 
   def __ge__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, Path):
       return False
-    step1, step2 = self._skip_common_steps_head(obj)
-    if step1 and step2:
-      return step1.index >= step2.index
-    elif step1:
-      return False
-    elif step2:
-      return True
-    else:
-      offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
-      return offset1 >= offset2
+    tail1, tail2 = self._skip_common_steps_head(obj)
+    return tail1 >= tail2
 
   def __eq__(self, obj: Any) -> bool:
-    if not isinstance(obj, PathRange):
+    if not isinstance(obj, Path):
       return False
-    step1, step2 = self._skip_common_steps_head(obj)
-    if step1 or step2:
-      return False
-    offset1, offset2 = self._convert_offset_to_comparable_pairs(obj)
-    return offset1 == offset2
+    tail1, tail2 = self._skip_common_steps_head(obj)
+    return tail1 == tail2
   
-  def _skip_common_steps_head(self, obj: Any):
+  def _skip_common_steps_head(self, obj: Path):
     index = 0
     for s1, s2 in zip(self.steps, obj.steps):
       if s1 != s2:
         break
       index += 1
-    step1: Redirect | Step | None = None
-    step2: Redirect | Step | None = None
+    
+    tail1: Redirect | Step | Offset | None = None
+    tail2: Redirect | Step | Offset | None = None
+
     if index < len(self.steps):
-      step1 = self.steps[index]
+      tail1 = self.steps[index]
+    else:
+      tail1 = self.offset
     if index < len(obj.steps):
-      step2 = obj.steps[index]
-    return step1, step2
+      tail2 = obj.steps[index]
+    else:
+      tail2 = obj.offset
+
+    type1 = self._offset_type_id(tail1)
+    type2 = self._offset_type_id(tail2)
+
+    if type1 < type2:
+      return (0, 1)
+    elif type1 > type2:
+      return (1, 0)
+    else:
+      return (tail1, tail2)
   
-  def _convert_offset_to_comparable_pairs(self, obj: Any):
+  def _convert_tail_to_comparable_pairs(self, obj: Path):
     offset1 = self.offset
     offset2 = obj.offset
     type1 = self._offset_type_id(offset1)
@@ -143,20 +124,27 @@ class Path:
       return (1, 0)
     else:
       return (offset1, offset2)
-
-  def _offset_type_id(self, offset: Offset | None):
-    if offset is None:
+  
+  def _offset_type_id(self, tail: Redirect | Step | Offset | None):
+    # https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-sorting
+    # different step types come in the following order from least important to most important: 
+    # character offset (:), child (/), temporal-spatial (~ or @), reference/indirect (!).
+    if tail is None:
       return 0
-    elif isinstance(offset, CharacterOffset):
+    elif isinstance(tail, Redirect):
       return 1
-    elif isinstance(offset, TemporalOffset):
+    elif isinstance(tail, SpatialOffset):
       return 2
-    elif isinstance(offset, TemporalSpatialOffset):
+    elif isinstance(tail, TemporalOffset):
       return 3
-    elif isinstance(offset, SpatialOffset):
+    elif isinstance(tail, TemporalSpatialOffset):
       return 4
+    elif isinstance(tail, Step):
+      return 5
+    elif isinstance(tail, CharacterOffset):
+      return 6
     else:
-      raise ValueError(f"Unknown offset type: {offset}")
+      raise ValueError(f"Unknown offset type: {tail}")
   
 @dataclass
 @total_ordering
