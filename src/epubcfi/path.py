@@ -16,9 +16,25 @@ from .tokenizer import (
 Offset = CharacterOffset | TemporalOffset | SpatialOffset | TemporalSpatialOffset
 
 @dataclass
+@total_ordering
 class Redirect:
   def __str__(self) -> str:
     return "!"
+  
+  def __lt__(self, obj: Self) -> bool:
+    return False
+
+  def __gt__(self, obj: Self) -> bool:
+    return False
+
+  def __le__(self, obj: Self) -> bool:
+    return isinstance(obj, Redirect)
+
+  def __ge__(self, obj: Self) -> bool:
+    return isinstance(obj, Redirect)
+
+  def __eq__(self, obj: Self) -> bool:
+    return isinstance(obj, Redirect)
 
 @dataclass
 @total_ordering
@@ -42,7 +58,7 @@ class Path:
       return True
     step1, step2 = self._skip_common_steps_head(obj)
     if step1 and step2:
-      return step1.index < step2.index
+      return step1 < step2
     elif step1:
       return True
     elif step2:

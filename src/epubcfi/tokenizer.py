@@ -1,7 +1,8 @@
 from enum import Enum
 from io import StringIO
 from dataclasses import dataclass
-from typing import Literal
+from functools import total_ordering
+from typing import Self, Literal
 from .assertion import read_assertion, str_assertion
 from .error import TokenizerException
 
@@ -26,7 +27,9 @@ class Symbol(Token):
   def __str__(self) -> str:
     return self.text
 
+# https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-sorting
 @dataclass
+@total_ordering
 class Step(Token):
   index: int
   assertion: str | None
@@ -34,6 +37,31 @@ class Step(Token):
   def __str__(self) -> str:
     assertion = str_assertion(self.assertion)
     return f"/{self.index}{assertion}"
+
+  def __lt__(self, obj: Self) -> bool:
+    if not isinstance(obj, Step):
+      return False
+    return self.index < obj.index
+
+  def __gt__(self, obj: Self) -> bool:
+    if not isinstance(obj, Step):
+      return True
+    return self.index > obj.index
+
+  def __le__(self, obj: Self) -> bool:
+    if not isinstance(obj, Step):
+      return False
+    return self.index <= obj.index
+
+  def __ge__(self, obj: Self) -> bool:
+    if not isinstance(obj, Step):
+      return True
+    return self.index >= obj.index
+
+  def __eq__(self, obj: Self) -> bool:
+    if not isinstance(obj, Step):
+      return False
+    return self.index == obj.index
 
 @dataclass
 class Offset(Token):
