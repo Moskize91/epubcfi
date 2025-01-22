@@ -1,7 +1,7 @@
 import unittest
 
 from src.epubcfi.path import PathRange
-from src.epubcfi.cfi import split, to_absolute, _capture_cfi
+from src.epubcfi.cfi import parse, split, to_absolute, _capture_cfi
 
 class TestCFI(unittest.TestCase):
 
@@ -33,3 +33,24 @@ class TestCFI(unittest.TestCase):
     for source, target in pairs:
       _, cfi = _capture_cfi(source)
       self.assertEqual(cfi, target)
+
+  def test_sorted_cfi(self):
+    expressions = [
+      "book.epub#epubcfi(/6/4/321)",
+      "book.epub#epubcfi(/6/4)",
+      "book.epub#epubcfi(/6/4/123)",
+      "book.epub#epubcfi(/6/4@0:99)",
+      "book.epub#epubcfi(/6/4@100:33)",
+      "book.epub#epubcfi(/6/4:23)",
+    ]
+    cfi_list = [parse(e) for e in expressions]
+    cfi_list = [cfi for cfi in cfi_list if cfi is not None]
+    cfi_list.sort()
+    self.assertEqual([str(cfi) for cfi in cfi_list], [
+      "/6/4",
+      "/6/4@100:33",
+      "/6/4@0:99",
+      "/6/4/123",
+      "/6/4/321",
+      "/6/4:23",
+    ])
