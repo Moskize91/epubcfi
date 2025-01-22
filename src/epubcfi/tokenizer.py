@@ -1,8 +1,8 @@
 from enum import Enum
 from io import StringIO
-from dataclasses import dataclass
 from typing import Literal
-from .assertion import read_assertion, str_assertion
+from .assertion import read_assertion
+from .token import Token, EOF, Symbol, Step, CharacterOffset, TemporalOffset, SpatialOffset, TemporalSpatialOffset
 from .error import TokenizerException
 
 class Phase(Enum):
@@ -10,73 +10,6 @@ class Phase(Enum):
   Step = 2
   Offset = 3
 
-@dataclass
-class Token:
-  def __str__(self) -> str:
-    return ""
-
-@dataclass
-class EOF(Token):
-  pass
-
-@dataclass
-class Symbol(Token):
-  text: Literal[",", "!"]
-
-  def __str__(self) -> str:
-    return self.text
-
-@dataclass
-class Step(Token):
-  index: int
-  assertion: str | None
-
-  def __str__(self) -> str:
-    assertion = str_assertion(self.assertion)
-    return f"/{self.index}{assertion}"
-
-@dataclass
-class Offset(Token):
-  assertion: str | None
-
-# https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-path-terminating-char
-@dataclass
-class CharacterOffset(Offset):
-  value: int
-
-  def __str__(self) -> str:
-    assertion = str_assertion(self.assertion)
-    return f":{self.value}{assertion}"
-
-# https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-path-terminating-temporal
-@dataclass
-class TemporalOffset(Offset):
-  seconds: int
-
-  def __str__(self) -> str:
-    assertion = str_assertion(self.assertion)
-    return f"~{self.seconds}{assertion}"
-
-# https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-path-terminating-spatial
-@dataclass
-class SpatialOffset(Offset):
-  x: int
-  y: int
-
-  def __str__(self) -> str:
-    assertion = str_assertion(self.assertion)
-    return f"@{self.x}:{self.y}{assertion}"
-
-# https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-path-terminating-tempspatial
-@dataclass
-class TemporalSpatialOffset(TemporalOffset):
-  x: int
-  y: int
-
-  def __str__(self) -> str:
-    assertion = str_assertion(self.assertion)
-    return f"~{self.seconds}@{self.x}:{self.y}{assertion}"
-  
 class Tokenizer:
   def __init__(self, content: str):
     self._phase: Phase = Phase.Ready

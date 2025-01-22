@@ -1,30 +1,31 @@
 import re
-from .parser import parse, Path, PathTuple, ParsedPath
+
+from .parser import parse as parse_cfi
+from .path import Path, PathRange, ParsedPath
+
+
+def parse(path: str) -> ParsedPath | None:
+  _, cfi = _capture_cfi(path)
+  if cfi is None:
+    return path, None
+  return parse_cfi(cfi)
 
 def split(path: str) -> tuple[str, ParsedPath | None]:
   tail, cfi = _capture_cfi(path)
   if cfi is None:
     return path, None
-  result = parse(cfi)
+  result = parse_cfi(cfi)
   prefix = path[:len(path) - len(tail)]
   return prefix, result
 
-def format(path: ParsedPath) -> str:
-  if isinstance(path, Path):
-    return str(path)
-  else:
-    parent, start, end = path
-    return f"{parent},{start},{end}"
-
-def to_absolute(paths: PathTuple) -> tuple[Path, Path]:
-  parent, start0, end0 = paths
+def to_absolute(r: PathRange) -> tuple[Path, Path]:
   start = Path(
-    steps=parent.steps + start0.steps,
-    offset=start0.offset,
+    steps=r.parent.steps + r.start.steps,
+    offset=r.start.offset,
   )
   end = Path(
-    steps=parent.steps + end0.steps,
-    offset=end0.offset,
+    steps=r.parent.steps + r.end.steps,
+    offset=r.end.offset,
   )
   return start, end
   

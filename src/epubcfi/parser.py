@@ -1,47 +1,16 @@
 from __future__ import annotations
-from dataclasses import dataclass
-from io import StringIO
 from typing import Literal
 from .error import ParserException
+from .path import Path, PathRange, ParsedPath, Redirect, Offset
+from .token import Offset as TokenOffset
 from .tokenizer import (
   EOF,
   Step,
   Symbol,
   Token,
   Tokenizer,
-  Offset as TokenOffset,
-  CharacterOffset,
-  TemporalOffset,
-  SpatialOffset,
-  TemporalSpatialOffset,
 )
-
-Offset = CharacterOffset | TemporalOffset | SpatialOffset | TemporalSpatialOffset
-
-@dataclass
-class Path:
-  steps: list[Redirect | Step]
-  offset: Offset | None
-
-  def start_with_redirect(self) -> bool:
-    return isinstance(self.steps[0], Redirect)
-
-  def __str__(self):
-    buffer = StringIO()
-    for step in self.steps:
-      buffer.write(str(step))
-    if self.offset is not None:
-      buffer.write(str(self.offset))
-    return buffer.getvalue()
   
-PathTuple = tuple[Path, Path, Path]
-ParsedPath = Path | PathTuple
-
-@dataclass
-class Redirect:
-  def __str__(self) -> str:
-    return "!"
-
 class _Parser:
   def __init__(self, content: str):
     self._cache_token: Token | None = None
@@ -56,7 +25,7 @@ class _Parser:
       parent, start, end = paths
       if parent.start_with_redirect():
         raise ParserException("Parent path cannot start with \"!\")")
-      return parent, start, end
+      return PathRange(parent, start, end)
     else:
       raise ParserException(f"wrong path number: {len(paths)}")
 
