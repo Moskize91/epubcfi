@@ -1,5 +1,5 @@
 import unittest
-from src.epubcfi.cfi import parse, format, _capture_cfi
+from src.epubcfi.cfi import parse, _capture_cfi
 
 class TestHistoryBug(unittest.TestCase):
 
@@ -11,4 +11,4 @@ class TestHistoryBug(unittest.TestCase):
     for expression in history_expressions:
       _, cfi = _capture_cfi(expression)
       path = parse(expression)
-      self.assertEqual(cfi, format(path))
+      self.assertEqual(cfi, str(path))

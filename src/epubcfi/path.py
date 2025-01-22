@@ -32,6 +32,13 @@ class Path:
       buffer.write(str(self.offset))
     return buffer.getvalue()
   
+@dataclass
+class PathRange:
+  parent: Path
+  start: Path
+  end: Path
 
-PathTuple = tuple[Path, Path, Path]
-ParsedPath = Path | PathTuple
+  def __str__(self):
+    return f"{self.parent},{self.start},{self.end}"
+
+ParsedPath = Path | PathRange

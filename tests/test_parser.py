@@ -1,4 +1,6 @@
 import unittest
+
+from src.epubcfi.path import PathRange
 from src.epubcfi.parser import parse
 
 class TestParser(unittest.TestCase):
@@ -23,6 +25,5 @@ class TestParser(unittest.TestCase):
     ]
     for cfi in cfi_list:
       result = parse(cfi)
-      self.assertTrue(isinstance(result, tuple))
-      self.assertTrue(len(result) == 3)
-      self.assertEqual(cfi, ",".join([str(e) for e in result]))
+      self.assertTrue(isinstance(result, PathRange))
+      self.assertEqual(cfi, str(result))

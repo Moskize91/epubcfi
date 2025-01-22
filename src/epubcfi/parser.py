@@ -1,7 +1,7 @@
 from __future__ import annotations
 from typing import Literal
 from .error import ParserException
-from .path import Path, ParsedPath, Redirect, Offset
+from .path import Path, PathRange, ParsedPath, Redirect, Offset
 from .tokenizer import (
   EOF,
   Step,
@@ -25,7 +25,7 @@ class _Parser:
       parent, start, end = paths
       if parent.start_with_redirect():
         raise ParserException("Parent path cannot start with \"!\")")
-      return parent, start, end
+      return PathRange(parent, start, end)
     else:
       raise ParserException(f"wrong path number: {len(paths)}")
 
