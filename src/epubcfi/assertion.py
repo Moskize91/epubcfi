@@ -1,6 +1,7 @@
 from io import StringIO
 from .error import TokenizerException
 
+
 _escaped_chars = ("^", "[", "]", "(", ")", ",", ";", "=")
 
 class _AssertionReader:

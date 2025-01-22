@@ -1,5 +1,8 @@
 import re
-from .parser import parse as parse_cfi, Path, PathTuple, ParsedPath
+
+from .parser import parse as parse_cfi
+from .path import Path, PathTuple, ParsedPath
+
 
 def parse(path: str) -> tuple[str, ParsedPath | None]:
   _, cfi = _capture_cfi(path)
