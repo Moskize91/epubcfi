@@ -1,7 +1,7 @@
 import unittest
 
-from epubcfi.path import PathRange
-from epubcfi.parser import parse
+from epubcfi.cfi.path import PathRange
+from epubcfi.cfi.parser import parse
 
 
 class TestParser(unittest.TestCase):

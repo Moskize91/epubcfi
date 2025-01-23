@@ -1,10 +1,21 @@
 {
-    "cSpell.words": [
-        "bdist",
-        "epubcfi",
-        "epubcif",
-        "sdist",
-        "venv",
-        "Zeyu"
-    ]
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true,
+  "cSpell.words": [
+    "bdist",
+    "epubcfi",
+    "epubcif",
+    "idref",
+    "idrefs",
+    "itemref",
+    "iterchildren",
+    "lxml",
+    "nsmap",
+    "rootfile",
+    "rootfiles",
+    "sdist",
+    "venv",
+    "Zeyu"
+  ],
+  "files.trimTrailingWhitespace": true
 }
