@@ -1,6 +1,6 @@
 import unittest
 
-from epubcfi.cfi import parse, _capture_cfi
+from epubcfi.cfi.handler import parse, _capture_cfi
 
 class TestHistoryBug(unittest.TestCase):
 

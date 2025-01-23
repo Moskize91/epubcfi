@@ -1,6 +1,6 @@
 import unittest
 
-from epubcfi.tokenizer import Token, EOF, Tokenizer
+from epubcfi.cfi.tokenizer import Token, EOF, Tokenizer
 
 
 class TestTokenizer(unittest.TestCase):
