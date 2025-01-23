@@ -5,7 +5,11 @@
     "bdist",
     "epubcfi",
     "epubcif",
+    "idref",
+    "iterchildren",
     "lxml",
+    "nsmap",
+    "rootfile",
     "sdist",
     "venv",
     "Zeyu"

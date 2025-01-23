@@ -7,9 +7,6 @@ class Unzip:
   def __init__(self, unzip_path: str):
     self._unzip_path: str = unzip_path
 
-  def clear(self):
-    shutil.rmtree(self._unzip_path)
-
   def unzip_file(self, file_path: str) -> str:
     if not os.path.exists(file_path):
       raise FileNotFoundError(f"File not found: {file_path}")
