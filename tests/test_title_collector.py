@@ -1,7 +1,7 @@
 import os
 import unittest
 
-from epubcfi.epub.title_collector import _FireCursor
+from epubcfi.epub.stepper import _FireCursor
 
 CONTEXT = os.path.dirname(os.path.abspath(__file__))
 
