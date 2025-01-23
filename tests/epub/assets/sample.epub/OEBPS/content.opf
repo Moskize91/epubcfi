@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns="http://www.idpf.org/2007/opf" xmlns:epub="http://www.idpf.org/2007/ops" xmlns:ibooks="http://apple.com/ibooks/html-extensions" unique-identifier="a9781789604368" version="3.0" prefix="rendition: http://www.idpf.org/vocab/rendition/# ibooks: http://vocabulary.itunes.apple.com/rdf/ibooks/vocabulary-extensions-1.0/">
+<metadata xmlns:opf="http://www.idpf.org/2007/opf" xmlns:dc="http://purl.org/dc/elements/1.1/">
+<dc:title>The Sublime Object of Ideology</dc:title>
+<dc:creator>Slavoj Žižek</dc:creator>
+<dc:publisher>Verso</dc:publisher>
+<dc:rights>© Slavoj Žižek 1989</dc:rights>
+<dc:identifier id="a9781789604368">a9781789604368</dc:identifier>
+<dc:language>en-US</dc:language>
+<meta property="dcterms:modified">2018-11-04T02:30:00Z</meta>
+<meta property="ibooks:version">3.0</meta>
+<meta property="ibooks:specified-fonts">true</meta>
+<meta name="cover" content="cover-image"/>
+</metadata>
+<manifest>
+<item id="style" href="templateJo9779hnBrownvlthmfuwrmefxonbsyetochqcom.css" media-type="text/css"/>
+<item id="ncx" href="toc.ncx" media-type="application/x-dtbncx+xml"/>
+<item id="toc" href="NavJohnBrownvlthmfuwrmefxonbsy4202etochqcom.xhtml" properties="nav" media-type="application/xhtml+xml"/>
+<item id="cover" href="CoverJohnBrownvl3063thmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Halftitle" href="01_FrontJohnBrownvlthmfuwrmefxo6426nbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Title" href="02_TitleJohnBrownvlthmfuwrmefxonbsyetoc4345hqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Copyright" href="03_CopyrightJohnBrownv1470lthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Contents" href="04_ContentsJohnBrownvlthmfuwrmefxonbsyetochq7136com.xhtml" media-type="application/xhtml+xml"/>
+<item id="Preface" href="05_PrefaceJohnBrownvlthmfuwr7033mefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Intro" href="06_IntroJohnBrownvlthmfuwrmefxonbsye19tochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Part1" href="07_Part01JohnBrownvlthmfuwrmefxo6686nbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap01" href="08_Chap01JohnBrownvlthmfuwrmefxonbsyetoch4544qcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap02" href="09_Chap02JohnBrownv1142lthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Part2" href="10_Part02JohnBr5372ownvlthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap03" href="11_Chap03JohnBrownv5026lthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap04" href="12_Chap04JohnBrownvlthmfuwrmefxonbsye3980tochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Part3" href="13_Part03JohnBrownvlthmfuwrmefxonbsy5496etochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap05" href="14_Chap05JohnBrownvlth8466mfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Chap06" href="15_Chap06JohnBrow5325nvlthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Notes" href="16_NotesJohnBrownvlthmfuwrmefx8621onbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="Index" href="17_IndexJohnBrownvlthmfuwrme7338fxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/>
+<item id="cover-image" href="images/CoverJohnBrownv4982lthmfuwrmefxonbsyetochqcom.jpg" media-type="image/jpeg"/>
+<item id="img_line" href="images/img_lineJohnBrownvlth4022mfuwrmefxonbsyetochqcom.png" media-type="image/png"/>
+<item id="img_p3" href="images/img_p3JohnBrownvlthmfuwrmefxonbsyetochqcom3013.png" media-type="image/png"/>
+<item id="img_p4" href="images/img_p4JohnB5314rownvlthmfuwrmefxonbsyetochqcom.png" media-type="image/png"/>
+<item id="img_p111" href="images/img111-01JohnBrown7881vlthmfuwrmefxonbsyetochqcom.png" media-type="image/png"/>
+<item id="img_p114" href="images/img114-01JohnBrownvlthmfu5307wrmefxonbsyetochqcom.png" media-type="image/png"/>
+<item id="img_p124" href="images/img124-01JohnBrownvlthmfuwrmefxo7337nbsyetochqcom.jpg" media-type="image/jpeg"/>
+<item id="img_p136" href="images/img136-01John8727Brownvlthmfuwrmefxonbsyetochqcom.jpg" media-type="image/jpeg"/>
+<item id="img_p209" href="images/img209-01JohnBrow1374nvlthmfuwrmefxonbsyetochqcom.jpg" media-type="image/jpeg"/>
+<item id="logo" href="images/logoJohnBrow2365nvlthmfuwrmefxonbsyetochqcom.jpg" media-type="image/jpeg"/>
+<item id="exlibris" href="exlibrisJohnBrownvlthmfuwrmefxonbsyetochqc266om.png" media-type="image/png"/><item id="exlibrispage" href="exlibrisJohnBrownvlthmfuwrmefxonbsy4266etochqcom.xhtml" media-type="application/xhtml+xml"/><item id="BooXtream" href="disclaimerJohnBrown5019vlthmfuwrmefxonbsyetochqcom.xhtml" media-type="application/xhtml+xml"/></manifest>
+<spine toc="ncx">
+<itemref idref="cover" linear="yes"/>
+<itemref idref="exlibrispage"/><itemref idref="Halftitle" linear="yes"/>
+<itemref idref="Title" linear="yes"/>
+<itemref idref="Copyright" linear="yes"/>
+<itemref idref="Contents" linear="yes"/>
+<itemref idref="Preface" linear="yes"/>
+<itemref idref="Intro" linear="yes"/>
+<itemref idref="Part1" linear="yes"/>
+<itemref idref="Chap01" linear="yes"/>
+<itemref idref="Chap02" linear="yes"/>
+<itemref idref="Part2" linear="yes"/>
+<itemref idref="Chap03" linear="yes"/>
+<itemref idref="Chap04" linear="yes"/>
+<itemref idref="Part3" linear="yes"/>
+<itemref idref="Chap05" linear="yes"/>
+<itemref idref="Chap06" linear="yes"/>
+<itemref idref="Notes" linear="yes"/>
+<itemref idref="Index" linear="yes"/>
+<itemref idref="BooXtream"/></spine>
+</package>

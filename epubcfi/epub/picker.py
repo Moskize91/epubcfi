@@ -1,6 +1,7 @@
 import os
 
 from lxml import etree
+from ..cfi import Step, Redirect
 
 
 class Spine:
@@ -21,6 +22,29 @@ class Spine:
     path = os.path.join(self._folder_path, self.href)
     path = os.path.abspath(path)
     return path
+
+
+class Cursor:
+  def __init__(self, dom: any):
+    self.dom: any = dom
+
+  def forward(self, operation: Step | Redirect):
+    if isinstance(operation, Step):
+      self._step(operation)
+    elif isinstance(operation, Redirect):
+      self._redirect(operation)
+    else:
+      raise ValueError(f"Unexpected operation: {operation}")
+
+
+  def _step(self, step: Step):
+    # https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-path-child-ref
+    for child in self.dom.iterchildren():
+      print(child)
+
+  def _redirect(self, redirect: Redirect):
+    pass
+
 
 class Picker:
   def __init__(self, folder_path: str):
@@ -83,6 +107,9 @@ class Picker:
       },
     )
     return [creator.text for creator in creators]
+
+  def cursor(self) -> Cursor:
+    return Cursor(self._tree.getroot())
 
   @property
   def spines(self) -> list[Spine]:
