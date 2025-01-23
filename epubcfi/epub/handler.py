@@ -7,6 +7,7 @@ from ..cfi import ParsedPath
 from .unzip import Unzip
 from .picker import pick, EpubBook
 from .ncx_finder import find_ncx_label
+from .utils import SizeLimitMap
 
 
 class EpubNode:
@@ -21,7 +22,10 @@ class EpubNode:
       self._is_created_path = True
 
     self._unzip: Unzip = Unzip(unzip_path)
-    self._books: dict[str, tuple[EpubBook, TextIOWrapper]] = {}
+    self._books: SizeLimitMap[tuple[EpubBook, TextIOWrapper]] = SizeLimitMap(
+      limit=7,
+      on_close=lambda e: e[1].close(),
+    )
 
   def ncx_label(self, epub_path: str, cfi_path: ParsedPath) -> str | None:
     book, reader = self._book_pair(epub_path)

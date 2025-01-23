@@ -19,9 +19,9 @@ class TestUtils(unittest.TestCase):
       limit=3,
       on_close=lambda e: e.close(),
     )
-    limit_map.put("1", NeedClose(1))
-    limit_map.put("2", NeedClose(2))
-    limit_map.put("3", NeedClose(3))
+    limit_map["1"] = NeedClose(1)
+    limit_map["2"] = NeedClose(2)
+    limit_map["3"] = NeedClose(3)
 
     keys: list[str] = []
     values: list[NeedClose] = []
@@ -40,8 +40,8 @@ class TestUtils(unittest.TestCase):
       [value.did_close for value in values],
       [False, False, False],
     )
-    limit_map.put("4", NeedClose(4))
-    limit_map.put("5", NeedClose(5))
+    limit_map["4"] = NeedClose(4)
+    limit_map["5"] = NeedClose(5)
 
     for key in limit_map.keys():
       if key > "3":

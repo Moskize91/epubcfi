@@ -45,10 +45,13 @@ class SizeLimitMap(Generic[E]):
   def __len__(self):
     return len(self._store)
 
+  def __contains__(self, item: E):
+    return item in self._store
+
   def __str__(self):
     return str(self._store)
 
-  def put(self, key: str, value: E):
+  def __setitem__(self, key: str, value: E):
     removed_value: E | None = None
 
     if key not in self._store:
@@ -61,7 +64,7 @@ class SizeLimitMap(Generic[E]):
     if removed_value is not None:
       self._on_close(removed_value)
 
-  def pop(self, key: str) -> E | None:
+  def __getitem__(self, key: str) -> E | None:
     if key not in self._store:
       return None
     self._keys.remove(key)
