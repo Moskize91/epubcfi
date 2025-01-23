@@ -35,7 +35,7 @@ class _AssertionReader:
     else:
       self._buffer.write(char)
     return None
-  
+
 def read_assertion(source: StringIO) -> str:
   return _AssertionReader(source).read()
 

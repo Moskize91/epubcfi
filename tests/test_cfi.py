@@ -1,7 +1,8 @@
 import unittest
 
-from src.epubcfi.path import PathRange
-from src.epubcfi.cfi import parse, split, to_absolute, _capture_cfi
+from epubcfi.path import PathRange
+from epubcfi.cfi import parse, split, to_absolute, _capture_cfi
+
 
 class TestCFI(unittest.TestCase):
 

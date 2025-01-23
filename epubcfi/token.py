@@ -68,7 +68,7 @@ class CharacterOffset(Offset):
   def __str__(self) -> str:
     assertion = str_assertion(self.assertion)
     return f":{self.value}{assertion}"
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, CharacterOffset):
       return False
@@ -103,7 +103,7 @@ class TemporalOffset(Offset):
   def __str__(self) -> str:
     assertion = str_assertion(self.assertion)
     return f"~{self.seconds}{assertion}"
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, TemporalOffset):
       return False
@@ -139,7 +139,7 @@ class SpatialOffset(Offset):
   def __str__(self) -> str:
     assertion = str_assertion(self.assertion)
     return f"@{self.x}:{self.y}{assertion}"
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, SpatialOffset):
       return False
@@ -175,7 +175,7 @@ class TemporalSpatialOffset(TemporalOffset):
   def __str__(self) -> str:
     assertion = str_assertion(self.assertion)
     return f"~{self.seconds}@{self.x}:{self.y}{assertion}"
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, TemporalSpatialOffset):
       return False
@@ -200,4 +200,3 @@ class TemporalSpatialOffset(TemporalOffset):
     if not isinstance(obj, TemporalSpatialOffset):
       return False
     return (self.seconds, self.y, self.x) == (obj.seconds, obj.y, obj.x)
-  
