@@ -3,13 +3,17 @@ import io
 
 from dataclasses import dataclass
 from lxml import etree
+from .utils import relative_root_path
 
 
 @dataclass
 class EpubBook:
   title: str | None
   authors: list[str]
+  root_path: str
+  content_path: str
   ncx: list[tuple[str, str]]
+  ref2path: dict[str, str]
 
 def pick(root_path: str) -> EpubBook:
   content_path = _find_content_path(root_path)
@@ -17,15 +21,23 @@ def pick(root_path: str) -> EpubBook:
   base_path = os.path.dirname(content_path)
   title, authors = _find_metadata(content_tree)
   ncx_path = _find_ncx_path(content_tree, root_path, content_path)
+  ref2path: dict[str, str] = {}
   ncx: list[tuple[str, str]] = []
 
+  for id, href in _find_refs(content_tree):
+    path = relative_root_path(root_path, base_path, href)
+    ref2path[id] = path
+
   for label, href in _find_ncx(ncx_path):
-    path = _relative_root_path(root_path, base_path, href)
+    path = relative_root_path(root_path, base_path, href)
     ncx.append((label, path))
 
   return EpubBook(
     title=title,
     authors=authors,
+    root_path=root_path,
+    content_path=content_path,
+    ref2path=ref2path,
     ncx=ncx,
   )
 
@@ -83,6 +95,28 @@ def _find_metadata(tree: any):
 
   return title, authors
 
+def _find_refs(tree: any):
+  namespaces = _namespaces(tree)
+  spine = tree.xpath("//ns:spine", namespaces=namespaces)[0]
+  manifest = tree.xpath("//ns:manifest", namespaces=namespaces)[0]
+  idrefs: set[str] = set()
+
+  for child in spine.xpath(".//ns:itemref", namespaces=namespaces):
+    idref = child.get("idref", None)
+    if idref is not None:
+      idrefs.add(idref.strip())
+
+  for child in manifest.xpath(".//ns:item", namespaces=namespaces):
+    id = child.get("id", None)
+    href = child.get("href", None)
+
+    if id is None:
+      continue
+    if href is None:
+      continue
+    if id in idrefs:
+      yield id, href.strip()
+
 def _find_ncx(ncx_path: str):
   tree = etree.parse(ncx_path)
   namespaces = _namespaces(tree)
@@ -98,26 +132,7 @@ def _find_ncx(ncx_path: str):
     href = content_dom.get("src", None)
 
     if href is not None:
-      yield label, href
+      yield label, href.strip()
 
 def _namespaces(tree: any):
   return { "ns": tree.getroot().nsmap.get(None) }
-
-def _relative_root_path(root_path: str, base_path: str, href: str):
-  if not root_path.endswith(os.path.sep):
-    root_path = root_path + os.path.sep
-
-  path = os.path.join(base_path, href)
-  path = os.path.abspath(path)
-
-  if not os.path.exists(path):
-    path = os.path.join(root_path, href)
-    path = os.path.abspath(path)
-
-  if not path.startswith(root_path):
-    return path
-
-  path = path[len(root_path):]
-  path = "." + os.path.sep + path
-
-  return path

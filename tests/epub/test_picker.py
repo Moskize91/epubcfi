@@ -1,7 +1,9 @@
 import os
 import unittest
 
+from epubcfi.cfi import parse
 from epubcfi.epub.picker import pick
+from epubcfi.epub.ncx_finder import find_ncx_label
 
 CONTEXT = os.path.dirname(os.path.abspath(__file__))
 
@@ -31,3 +33,17 @@ class TestPicker(unittest.TestCase):
       ("Index", "./17_IndexJohnBrownvlthmfuwrme7338fxonbsyetochqcom.xhtml"),
       ("This eBook is licensed to John Brown, vlthmfuwrmefxonbsy@etochq.com on 10/22/2020", "./disclaimerJohnBrown5019vlthmfuwrmefxonbsyetochqcom.xhtml")
     ])
+
+  def test_find_label(self):
+    book = pick(os.path.join(CONTEXT, "assets", "sample.epub"))
+    except_labels = [
+      ("sample.epub#epubcfi(/6/16!:32)", "Introduction"),
+      ("sample.epub#epubcfi(/6/24!)", "II. Lack in the Other"),
+      ("sample.epub#epubcfi(/4/34!)", "III. The Subject"),
+    ]
+    with open(book.content_path, "rb") as reader:
+      for cfi, expected_label in except_labels:
+        path = parse(cfi)
+        label = find_ncx_label(book, reader, path)
+        self.assertEqual(label, expected_label)
+        reader.seek(0)

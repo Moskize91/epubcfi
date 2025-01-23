@@ -15,6 +15,7 @@ class _Cursor:
     self._step_deep: int = 0
     self._stack: list[_State] = []
     self._matched: bool = False
+    self._last_is_text: bool = False
     self._index: int = 0
     self._parser = ParserCreate()
     self._parser.StartElementHandler = self._start_element
@@ -31,10 +32,7 @@ class _Cursor:
     except StopIteration:
       pass
     if not self._matched:
-      return None
-    if self._matched is None:
-      return None
-
+      return []
     return [
       (state.name, state.attrs)
       for state in self._stack
@@ -48,6 +46,7 @@ class _Cursor:
     state = _State(name, attrs, self._index)
     self._stack.append(state)
     self._index = 0
+    self._last_is_text = False
 
     if self._step_deep == len(self._stack) - 1:
       step = self._step_queue[-1]
@@ -63,6 +62,7 @@ class _Cursor:
     assert state is not None
     assert state.name == name
     self._index = state.index
+    self._last_is_text = False
     if len(self._stack) < self._step_deep:
       # won't match anymore
       raise StopIteration()
@@ -70,9 +70,12 @@ class _Cursor:
   def _char_data(self, _: str):
     # Consecutive (potentially-empty) chunks of character
     # data are each assigned odd indices (i.e., starting at 1, followed by 3, etc.).
+    if self._last_is_text:
+      return
     self._index += 1
+    self._last_is_text = True
     if self._index % 2 == 0:
       self._index += 1
 
-def forward_steps(reader: any, steps: list[int]) -> None | list[tuple[str, dict[str, str]]]:
+def forward_steps(reader: any, steps: list[int]) -> list[tuple[str, dict[str, str]]]:
   return _Cursor(reader, steps).parse()

@@ -6,6 +6,8 @@
     "epubcfi",
     "epubcif",
     "idref",
+    "idrefs",
+    "itemref",
     "iterchildren",
     "lxml",
     "nsmap",
