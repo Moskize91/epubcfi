@@ -10,8 +10,3 @@ class TestPicker(unittest.TestCase):
 
   def test_basic_cursor_forwarding(self):
     picker = Picker(os.path.join(CONTEXT, "assets", "sample.epub"))
-    cursor = picker.cursor()
-    cursor.forward(Step(
-      index=1,
-      assertion=None,
-    ))

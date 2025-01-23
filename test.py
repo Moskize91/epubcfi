@@ -3,7 +3,7 @@ import unittest
 try:
   loader = unittest.TestLoader()
   suite = loader.discover("tests")
-  # suite = loader.discover("tests/epub")
+  # suite = loader.discover("tests", pattern="*/test_title_collector.py")
   runner = unittest.TextTestRunner()
   result = runner.run(suite)
   if not result.wasSuccessful():
