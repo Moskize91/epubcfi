@@ -28,7 +28,7 @@ def to_absolute(r: PathRange) -> tuple[Path, Path]:
     offset=r.end.offset,
   )
   return start, end
-  
+
 def _capture_cfi(path: str):
   matched = re.search(r"(#|^)epubcfi\((.*)\)$", path)
   if matched:

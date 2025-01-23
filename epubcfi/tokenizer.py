@@ -6,13 +6,13 @@ from .token import Token, EOF, Symbol, Step, CharacterOffset, TemporalOffset, Sp
 from .error import TokenizerException
 
 class Phase(Enum):
-  Ready = 1
-  Step = 2
-  Offset = 3
+  READY = 1
+  STEP = 2
+  OFFSET = 3
 
 class Tokenizer:
   def __init__(self, content: str):
-    self._phase: Phase = Phase.Ready
+    self._phase: Phase = Phase.READY
     self._inject_char: str = ""
     self._buffer: StringIO = StringIO()
     self._source: StringIO = StringIO(content)
@@ -35,12 +35,12 @@ class Tokenizer:
         return token
 
   def _read(self, char: str) -> tuple[Token | None, bool]:
-    if self._phase == Phase.Ready:
+    if self._phase == Phase.READY:
       return self._read_when_read(char)
-    elif self._phase in (Phase.Step, Phase.Offset):
+    elif self._phase in (Phase.STEP, Phase.OFFSET):
       return self._read_integer(char)
     else:
-      raise Exception(f"Unexpected phase {self._phase}")
+      raise ValueError(f"Unexpected phase {self._phase}")
 
   def _read_when_read(self, char: str) -> tuple[Token | None, bool]:
     if char == "":
@@ -48,16 +48,16 @@ class Tokenizer:
     elif char in (",", "!"):
       return Symbol(text=char), True
     elif char == "/":
-      self._phase = Phase.Step
+      self._phase = Phase.STEP
     elif char in (":", "~", "@"):
       self._offset_symbol = char
-      self._phase = Phase.Offset
+      self._phase = Phase.OFFSET
     else:
       raise TokenizerException(f"Unexpected character: {char}")
     return None, True
-    
+
   def _read_integer(self, char: str) -> tuple[Token | None, bool]:
-    if char >= "0" and char <= "9":
+    if "0" <= char <= "9":
       self._buffer.write(char)
       return None, True
     else:
@@ -67,34 +67,34 @@ class Tokenizer:
       integer = int(text)
       self._buffer = StringIO()
 
-      if self._phase == Phase.Step:
+      if self._phase == Phase.STEP:
         assertion = self._read_assertion_if_need(char)
         step = Step(integer, assertion)
-        self._phase = Phase.Ready
+        self._phase = Phase.READY
         if assertion is None:
           return step, False
         else:
           return step, True
 
-      elif self._phase == Phase.Offset:
+      elif self._phase == Phase.OFFSET:
         self._offset_chain.append((self._offset_symbol, integer))
         if char in (":", "~", "@"):
           self._offset_symbol = char
           return None, True
         assertion = self._read_assertion_if_need(char)
         offset = self._create_offset(assertion)
-        self._phase = Phase.Ready
+        self._phase = Phase.READY
         return offset, assertion is not None
 
       else:
-        raise Exception(f"Unexpected phase {self._phase}")
-      
+        raise ValueError(f"Unexpected phase {self._phase}")
+
   def _read_assertion_if_need(self, char: str) -> str | None:
     assertion: str | None = None
     if char == "[":
       assertion = read_assertion(self._source)
     return assertion
-      
+
   def _create_offset(self, assertion: str | None) -> Token:
     token: Token | None = None
 
@@ -107,7 +107,7 @@ class Tokenizer:
         )
       elif symbol == "~":
         token = TemporalOffset(
-          seconds=value,  
+          seconds=value,
           assertion=assertion,
         )
     elif len(self._offset_chain) == 2:
@@ -115,7 +115,7 @@ class Tokenizer:
       symbol2, value2 = self._offset_chain[1]
       if symbol1 == "@" and symbol2 == ":":
         token = SpatialOffset(
-          x=value1, 
+          x=value1,
           y=value2,
           assertion=assertion,
         )
@@ -125,8 +125,8 @@ class Tokenizer:
       symbol3, value3 = self._offset_chain[2]
       if symbol1 == "~" and symbol2 == "@" and symbol3 == ":":
         token = TemporalSpatialOffset(
-          seconds=value1, 
-          x=value2, 
+          seconds=value1,
+          x=value2,
           y=value3,
           assertion=assertion,
         )
@@ -134,7 +134,7 @@ class Tokenizer:
       raise TokenizerException(f"Unexpected offset: {self._str_offset_chain()}")
     self._offset_chain.clear()
     return token
-      
+
   def _str_offset_chain(self) -> str:
     buffer = StringIO()
     for symbol, value in self._offset_chain:

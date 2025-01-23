@@ -10,7 +10,8 @@ from .tokenizer import (
   Token,
   Tokenizer,
 )
-  
+
+
 class _Parser:
   def __init__(self, content: str):
     self._cache_token: Token | None = None
@@ -60,7 +61,7 @@ class _Parser:
       else:
         break
       self._forward()
-    
+
     if isinstance(self._token, TokenOffset):
       offset = self._token
       self._forward()
@@ -73,7 +74,7 @@ class _Parser:
       # 从公式 redirected_path	=	"!" , ( offset | path ); 可知：
       # 不可以 ! 作为结尾，这样会选到某个文件的 root 节点（这是禁止的）
       raise ParserException("Cannot select root dom (must offset after redirect symbol)")
-    
+
     return Path(steps=steps, offset=offset)
 
   def _is_symbol(self, symbol: Literal["!", ","]) -> bool:

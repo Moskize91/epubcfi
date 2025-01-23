@@ -6,7 +6,7 @@ from dataclasses import dataclass
 from functools import total_ordering
 from typing import Any
 from .tokenizer import (
-  Step, 
+  Step,
   CharacterOffset,
   TemporalOffset,
   SpatialOffset,
@@ -20,7 +20,7 @@ Offset = CharacterOffset | TemporalOffset | SpatialOffset | TemporalSpatialOffse
 class Redirect:
   def __str__(self) -> str:
     return "!"
-  
+
   def __lt__(self, _: Any) -> bool:
     return False
 
@@ -52,7 +52,7 @@ class Path:
     if self.offset is not None:
       buffer.write(str(self.offset))
     return buffer.getvalue()
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, ParsedPath):
       return True
@@ -82,7 +82,7 @@ class Path:
       return False
     tail1, tail2 = self._skip_common_steps_head(obj)
     return tail1 == tail2
-  
+
   def _skip_common_steps_head(self, obj: ParsedPath):
     obj_steps: list[Redirect | Step]
     obj_offset: Offset | None
@@ -99,7 +99,7 @@ class Path:
       if s1 != s2:
         break
       index += 1
-    
+
     tail1: Redirect | Step | Offset | None = None
     tail2: Redirect | Step | Offset | None = None
 
@@ -124,7 +124,7 @@ class Path:
 
   def _offset_type_id(self, tail: Redirect | Step | Offset | None):
     # https://idpf.org/epub/linking/cfi/epub-cfi.html#sec-sorting
-    # different step types come in the following order from least important to most important: 
+    # different step types come in the following order from least important to most important:
     # character offset (:), child (/), temporal-spatial (~ or @), reference/indirect (!).
     if tail is None:
       return 0
@@ -142,7 +142,7 @@ class Path:
       return 6
     else:
       raise ValueError(f"Unknown offset type: {tail}")
-  
+
 @dataclass
 @total_ordering
 class PathRange:
@@ -152,7 +152,7 @@ class PathRange:
 
   def __str__(self):
     return f"{self.parent},{self.start},{self.end}"
-  
+
   def __lt__(self, obj: Any) -> bool:
     if not isinstance(obj, ParsedPath):
       return True
@@ -187,13 +187,13 @@ class PathRange:
     if isinstance(obj, Path):
       return obj == self
     return self._to_tuple() == obj._to_tuple()
-  
+
   def _to_tuple(self):
     return (self.parent, self.start, self.end)
-  
+
   def _obj_to_tuple(self, obj: ParsedPath):
     if isinstance(obj, PathRange):
-      return obj._to_tuple()
+      return (obj.parent, obj.start, obj.end)
     else:
       return obj, obj, obj
 

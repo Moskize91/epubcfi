@@ -3,6 +3,7 @@ import unittest
 from epubcfi.path import PathRange
 from epubcfi.cfi import parse, split, to_absolute, _capture_cfi
 
+
 class TestCFI(unittest.TestCase):
 
   def test_to_absolute(self):
