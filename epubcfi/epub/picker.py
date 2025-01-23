@@ -1,116 +1,123 @@
 import os
+import io
 
+from dataclasses import dataclass
 from lxml import etree
 
 
-class Spine:
-  def __init__(self, folder_path, base_path, item):
-    self._folder_path = folder_path
-    self._base_path = base_path
-    self.href = item.get("href")
-    self.media_type = item.get("media-type")
+@dataclass
+class EpubBook:
+  title: str | None
+  authors: list[str]
+  ncx: list[tuple[str, str]]
 
-  @property
-  def path(self) -> str:
-    path = os.path.join(self._base_path, self.href)
-    path = os.path.abspath(path)
+def pick(root_path: str) -> EpubBook:
+  content_path = _find_content_path(root_path)
+  content_tree = etree.parse(content_path)
+  base_path = os.path.dirname(content_path)
+  title, authors = _find_metadata(content_tree)
+  ncx_path = _find_ncx_path(content_tree, root_path, content_path)
+  ncx: list[tuple[str, str]] = []
 
-    if os.path.exists(path):
-      return path
+  for label, href in _find_ncx(ncx_path):
+    path = _relative_root_path(root_path, base_path, href)
+    ncx.append((label, path))
 
-    path = os.path.join(self._folder_path, self.href)
-    path = os.path.abspath(path)
+  return EpubBook(
+    title=title,
+    authors=authors,
+    ncx=ncx,
+  )
+
+def _find_content_path(root_path: str) -> str:
+  root = etree.parse(os.path.join(root_path, "META-INF", "container.xml")).getroot()
+  rootfile = root.xpath(
+    "//ns:container/ns:rootfiles/ns:rootfile",
+    namespaces={ "ns": root.nsmap.get(None) },
+  )[0]
+  full_path = rootfile.attrib["full-path"]
+  joined_path = os.path.join(root_path, full_path)
+
+  return os.path.abspath(joined_path)
+
+def _find_ncx_path(tree: any, root_path: str, content_path: str):
+  manifest = tree.xpath(
+    "//ns:manifest",
+    namespaces=_namespaces(tree),
+  )[0]
+  ncx_dom = manifest.find(".//*[@id=\"ncx\"]")
+  if ncx_dom is None:
+    return None
+
+  href_path = ncx_dom.get("href")
+  base_path = os.path.dirname(content_path)
+  path = os.path.join(base_path, href_path)
+  path = os.path.abspath(path)
+
+  if os.path.exists(path):
     return path
 
-class Picker:
-  def __init__(self, folder_path: str):
-    self.folder_path = folder_path
-    self._content_path = self._find_content_path(folder_path)
-    self._tree = etree.parse(self._content_path)
-    self._namespaces = { "ns": self._tree.getroot().nsmap.get(None) }
-    self._spine = self._tree.xpath("//ns:spine", namespaces=self._namespaces)[0]
-    self._metadata = self._tree.xpath("//ns:metadata", namespaces=self._namespaces)[0]
-    self._manifest = self._tree.xpath("//ns:manifest", namespaces=self._namespaces)[0]
+  path = os.path.join(root_path, path)
+  path = os.path.abspath(path)
+  return path
 
-  def _find_content_path(self, path: str) -> str:
-    root = etree.parse(os.path.join(path, "META-INF", "container.xml")).getroot()
-    rootfile = root.xpath(
-      "//ns:container/ns:rootfiles/ns:rootfile",
-      namespaces={ "ns": root.nsmap.get(None) },
-    )[0]
-    full_path = rootfile.attrib["full-path"]
-    joined_path = os.path.join(path, full_path)
+def _find_metadata(tree: any):
+  metadata = tree.xpath("//ns:metadata", namespaces=_namespaces(tree))[0]
+  titles = metadata.xpath(
+    "./dc:title",
+    namespaces={
+      "dc": metadata.nsmap.get("dc"),
+    },
+  )
+  creators = metadata.xpath(
+    "./dc:creator",
+    namespaces={
+      "dc": metadata.nsmap.get("dc"),
+    },
+  )
+  title: str | None = None
+  authors: list[str] = [creator.text for creator in creators]
 
-    return os.path.abspath(joined_path)
+  if len(titles) > 0:
+    title = titles[0].text
 
-  @property
-  def ncx_path(self) -> str | None:
-    ncx_dom = self._manifest.find(".//*[@id=\"ncx\"]")
-    if ncx_dom is None:
-      return None
+  return title, authors
 
-    href_path = ncx_dom.get("href")
-    base_path = os.path.dirname(self._content_path)
-    path = os.path.join(base_path, href_path)
+def _find_ncx(ncx_path: str):
+  tree = etree.parse(ncx_path)
+  namespaces = _namespaces(tree)
+  for nav_point in tree.xpath("//ns:navPoint", namespaces=namespaces):
+    label_dom = nav_point.xpath(".//ns:navLabel", namespaces=namespaces)[0]
+    content_dom = nav_point.xpath(".//ns:content", namespaces=namespaces)[0]
+    label_buffer = io.StringIO()
+
+    for text_dom in label_dom.xpath(".//ns:text", namespaces=namespaces):
+      label_buffer.write(text_dom.text)
+
+    label = label_buffer.getvalue().strip()
+    href = content_dom.get("src", None)
+
+    if href is not None:
+      yield label, href
+
+def _namespaces(tree: any):
+  return { "ns": tree.getroot().nsmap.get(None) }
+
+def _relative_root_path(root_path: str, base_path: str, href: str):
+  if not root_path.endswith(os.path.sep):
+    root_path = root_path + os.path.sep
+
+  path = os.path.join(base_path, href)
+  path = os.path.abspath(path)
+
+  if not os.path.exists(path):
+    path = os.path.join(root_path, href)
     path = os.path.abspath(path)
 
-    if os.path.exists(path):
-      return path
-
-    path = os.path.join(self.folder_path, path)
-    path = os.path.abspath(path)
+  if not path.startswith(root_path):
     return path
 
-  @property
-  def title(self):
-    titles = self._metadata.xpath(
-      "./dc:title",
-      namespaces={
-        "dc": self._metadata.nsmap.get("dc"),
-      },
-    )
-    if len(titles) == 0:
-      return None
+  path = path[len(root_path):]
+  path = "." + os.path.sep + path
 
-    return titles[0].text
-
-  @property
-  def authors(self) -> list[str]:
-    creators = self._metadata.xpath(
-      "./dc:creator",
-      namespaces={
-        "dc": self._metadata.nsmap.get("dc"),
-      },
-    )
-    return [creator.text for creator in creators]
-
-  @property
-  def spines(self) -> list[Spine]:
-    idref_dict = {}
-    index = 0
-
-    for child in self._spine.iterchildren():
-      id = child.get("idref")
-      idref_dict[id] = index
-      index += 1
-
-    items = [None for _ in range(index)]
-    spines: list[Spine] = []
-
-    for child in self._manifest.iterchildren():
-      id = child.get("id")
-      if id in idref_dict:
-        index = idref_dict[id]
-        items[index] = child
-
-    base_path = os.path.dirname(self._content_path)
-
-    for item in items:
-      if item is not None:
-        spines.append(Spine(
-          folder_path=self.folder_path,
-          base_path=base_path,
-          item=item,
-        ))
-
-    return spines
+  return path

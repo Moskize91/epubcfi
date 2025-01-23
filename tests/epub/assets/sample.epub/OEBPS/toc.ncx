@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ncx xmlns="http://www.daisy.org/z3986/2005/ncx/" xml:lang="en-US" version="2005-1">
+<head>
+<meta name="dtb:uid" content="a9781789604368"/>
+<meta name="dtb:depth" content="0"/>
+<meta name="dtb:totalPageCount" content="305"/>
+<meta name="dtb:maxPageNumber" content="0"/>
+</head>
+<docTitle><text>The Sublime Object of Ideology</text></docTitle>
+<docAuthor><text>Slavoj Žižek</text></docAuthor>
+<navMap>
+<navPoint playOrder="1" id="nav_1"><navLabel><text>Cover Page</text></navLabel><content src="CoverJohnBrownvl3063thmfuwrmefxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="2" id="nav_2"><navLabel><text>Title Page</text></navLabel><content src="02_TitleJohnBrownvlthmfuwrmefxonbsyetoc4345hqcom.xhtml"/></navPoint>
+<navPoint playOrder="3" id="nav_3"><navLabel><text>Copyright Page</text></navLabel><content src="03_CopyrightJohnBrownv1470lthmfuwrmefxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="4" id="nav_4"><navLabel><text>Contents</text></navLabel><content src="04_ContentsJohnBrownvlthmfuwrmefxonbsyetochq7136com.xhtml"/></navPoint>
+<navPoint playOrder="5" id="nav_5"><navLabel><text>Preface to the New Edition: The Idea’s Constipation</text></navLabel><content src="05_PrefaceJohnBrownvlthmfuwr7033mefxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="6" id="nav_6"><navLabel><text>Introduction</text></navLabel><content src="06_IntroJohnBrownvlthmfuwrmefxonbsye19tochqcom.xhtml"/></navPoint>
+<navPoint playOrder="7" id="nav_7"><navLabel><text>I. The Symptom</text></navLabel><content src="07_Part01JohnBrownvlthmfuwrmefxo6686nbsyetochqcom.xhtml"/>
+<navPoint playOrder="8" id="nav_8"><navLabel><text>1. How Did Marx Invent the Symptom?</text></navLabel><content src="08_Chap01JohnBrownvlthmfuwrmefxonbsyetoch4544qcom.xhtml"/></navPoint>
+<navPoint playOrder="9" id="nav_9"><navLabel><text>2. From Symptom to Sinthome</text></navLabel><content src="09_Chap02JohnBrownv1142lthmfuwrmefxonbsyetochqcom.xhtml"/></navPoint></navPoint>
+<navPoint playOrder="10" id="nav_10"><navLabel><text>II. Lack in the Other</text></navLabel><content src="10_Part02JohnBr5372ownvlthmfuwrmefxonbsyetochqcom.xhtml"/>
+<navPoint playOrder="11" id="nav_11"><navLabel><text>3. ‘Che Vuoi?’</text></navLabel><content src="11_Chap03JohnBrownv5026lthmfuwrmefxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="12" id="nav_12"><navLabel><text>4. You Only Die Twice</text></navLabel><content src="12_Chap04JohnBrownvlthmfuwrmefxonbsye3980tochqcom.xhtml"/></navPoint></navPoint>
+<navPoint playOrder="13" id="nav_13"><navLabel><text>III. The Subject</text></navLabel><content src="13_Part03JohnBrownvlthmfuwrmefxonbsy5496etochqcom.xhtml"/>
+<navPoint playOrder="14" id="nav_14"><navLabel><text>5. Which Subject of the Real?</text></navLabel><content src="14_Chap05JohnBrownvlth8466mfuwrmefxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="15" id="nav_15"><navLabel><text>6. ‘Not Only as Substance, but Also as Subject’</text></navLabel><content src="15_Chap06JohnBrow5325nvlthmfuwrmefxonbsyetochqcom.xhtml"/></navPoint></navPoint>
+<navPoint playOrder="16" id="nav_16"><navLabel><text>Notes</text></navLabel><content src="16_NotesJohnBrownvlthmfuwrmefx8621onbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="17" id="nav_17"><navLabel><text>Index</text></navLabel><content src="17_IndexJohnBrownvlthmfuwrme7338fxonbsyetochqcom.xhtml"/></navPoint>
+<navPoint playOrder="18" id="BooXtream"><navLabel><text>This eBook is licensed to John Brown, vlthmfuwrmefxonbsy@etochq.com on 10/22/2020</text></navLabel><content src="disclaimerJohnBrown5019vlthmfuwrmefxonbsyetochqcom.xhtml"/></navPoint></navMap>
+</ncx>
