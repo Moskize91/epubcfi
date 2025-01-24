@@ -2,7 +2,7 @@ from setuptools import setup
 
 setup(
   name="epubcfi",
-  version="0.0.1",
+  version="0.0.2",
   author="Tao Zeyu",
   author_email="i@taozeyu.com",
   description="handle Epub CFI",
